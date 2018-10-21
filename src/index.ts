@@ -11,13 +11,11 @@ export = (app: Application) => {
     checkRun.pull_requests.forEach(async (prRef: any) => {
       const pr = (await github.pullRequests.get({owner, repo, number: prRef.number})).data
 
-      console.log('pr', pr.body)
-      console.log('pr', pr.body.replace(/\s/g, ''))
+      const shouldMerge = pr.labels.find(label => {
+        return label.name === 'merge when green'
+      })
 
-      if (!pr.body.replace(/\s/g, '').includes(':white_check_mark::shipit:')) {
-        console.log('DOES NOT INCLUDE')
-        return
-      }
+      if(!shouldMerge) { return }
 
       const checks = (await github.checks.listForRef({
         owner,
@@ -25,21 +23,13 @@ export = (app: Application) => {
         ref: pr.head.ref
       })).data
 
-      console.log('checks', checks)
-
       const unsuccessful = checks.check_runs.find(cr => {
-        console.log('cr.status', cr.status)
-        console.log('cr.conclusion', cr.conclusion)
-        console.log('cr.app.owner.login', cr.app.owner.login)
-
         return (
           cr.status !== 'completed' &&
           cr.conclusion !== 'success' &&
           cr.app.owner.login === 'travis-ci'
         )
       })
-
-      console.log('unsuccessful', unsuccessful)
 
       if (!unsuccessful) {
         const result = await github.pullRequests.merge({
