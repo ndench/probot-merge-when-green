@@ -1,12 +1,6 @@
 import { Application } from 'probot'
+// import { mergeWhenGreen } from './checkRunHandler'
 
 export = (app: Application) => {
-  // Your code here
-  app.log('Yay, the app was loaded!')
-
-  // For more information on building apps:
-  // https://probot.github.io/docs/
-
-  // To get your app running against GitHub, see:
-  // https://probot.github.io/docs/development/
+  app.on('check_run.completed', async context => {})
 }
