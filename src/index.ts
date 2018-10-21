@@ -8,7 +8,9 @@ export = (app: Application) => {
     const owner = context.payload.repository.owner.name
     const repo = context.payload.repository.name
 
-    checkRun.pull_requests.forEach(async (pr: any) => {
+    checkRun.pull_requests.forEach(async (prRef: any) => {
+      const pr = (await github.pullRequests.get({owner, repo, number: prRef.number})).data
+
       if (!pr.body.replace(/\s/g, '').includes(':white_check_mark: :shipit:')) {
         return
       }
