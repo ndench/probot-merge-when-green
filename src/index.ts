@@ -21,11 +21,11 @@ export = (app: Application) => {
         ref: pr.head.ref
       })).data
 
-      const unsuccessful = checks.check_runs.find(checkRun => {
+      const unsuccessful = checks.check_runs.find(cr => {
         return (
-          checkRun.status !== 'completed' &&
-          checkRun.conclusion !== 'success' &&
-          checkRun.app.owner.login === 'travis-ci'
+          cr.status !== 'completed' &&
+          cr.conclusion !== 'success' &&
+          cr.app.owner.login === 'travis-ci'
         )
       })
 
