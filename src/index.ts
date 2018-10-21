@@ -5,7 +5,7 @@ export = (app: Application) => {
   app.on('check_run.completed', async context => {
     const github = context.github
     const checkRun = context.payload.check_run
-    const owner = context.payload.repository.owner.name
+    const owner = context.payload.repository.owner.login
     const repo = context.payload.repository.name
 
     checkRun.pull_requests.forEach(async (prRef: any) => {
