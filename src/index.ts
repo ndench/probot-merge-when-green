@@ -8,18 +8,18 @@ export = (app: Application) => {
     const owner = context.payload.repository.owner.name
     const repo = context.payload.repository.name
 
-    checkRun.pull_requests.forEach(async pr => {
+    checkRun.pull_requests.forEach(async (pr: any) => {
       if (!pr.body.replace(/\s/g, '').includes(':white_check_mark: :shipit:')) {
-        return false
+        return
       }
 
-      const checkRuns = (await github.checks.listForRef({
+      const checks = (await github.checks.listForRef({
         owner,
         repo,
         ref: pr.head.ref
       })).data
 
-      const unsuccessful = checkRuns.find(checkRun => {
+      const unsuccessful = checks.check_runs.find(checkRun => {
         return (
           checkRun.status !== 'completed' &&
           checkRun.conclusion !== 'success' &&
@@ -34,7 +34,7 @@ export = (app: Application) => {
           number: pr.number
         })
 
-        if (result.merged) {
+        if (result.data.merged) {
           await github.gitdata.deleteReference({
             owner,
             repo,
