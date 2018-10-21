@@ -1,4 +1,5 @@
-import { Application } from 'probot'
+// 'Application' is defined but never used
+import { Application } from 'probot' // eslint-disable-line
 // import { mergeWhenGreen } from './checkRunHandler'
 
 export = (app: Application) => {
