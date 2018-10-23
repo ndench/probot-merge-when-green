@@ -42,9 +42,10 @@ export = (app: Application) => {
 
       const unsuccessful = checks.check_runs.find(cr => {
         return (
-          cr.status !== 'completed' &&
+          cr.status !== 'completed' ||
+          (cr.status === 'completed' &&
           cr.conclusion !== 'success' &&
-          cr.app.owner.login === 'travis-ci'
+          cr.app.owner.login === 'travis-ci')
         )
       })
 
