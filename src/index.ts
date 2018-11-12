@@ -45,7 +45,7 @@ export = (app: Application) => {
           cr.status !== 'completed' ||
           (cr.status === 'completed' &&
           cr.conclusion !== 'success' &&
-          cr.app.owner.login === 'travis-ci')
+          (cr.app.owner.login === 'travis-ci' || cr.app.owner.login === 'circleci'))
         )
       })
 
