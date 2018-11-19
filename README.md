@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/phstc/probot-merge-when-green.svg?branch=master)](https://travis-ci.com/phstc/probot-merge-when-green)
+
 # probot-merge-when-green
 
 Tired of waiting for long-running tests before to merge pull requests?
