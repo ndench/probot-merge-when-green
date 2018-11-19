@@ -1,14 +1,5 @@
-const MERGE_LABEL = 'merge when green'
+export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
-
-async function createLabel(context: any) {
-  const github = context.github
-  const name = 'merge when green'
-  const description = 'See: https://github.com/phstc/probot-merge-when-green/'
-  const color = '#2cbe4e'
-
-  await github.issues.createLabel(context.repo({ name, color, description }))
-}
 
 export async function checkRunCompletedHandler(context: any) {
   const github = context.github
