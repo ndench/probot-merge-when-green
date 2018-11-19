@@ -1,7 +1,7 @@
 export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
 
-export async function checkRunCompletedHandler(context: any) {
+export async function checkRunCompletedHandler (context: any) {
   const github = context.github
   const checkRun = context.payload.check_run
 
