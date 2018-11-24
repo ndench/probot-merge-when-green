@@ -9,6 +9,10 @@ export = (app: Application) => {
   })
 
   app.on('installation.created', async context => {
-    await installationCreatedHandler(context)
+    await installationCreatedHandler(context, context.payload.repositories)
+  })
+
+  app.on(['integration_installation_repositories.added', 'installation_repositories.added'], async context => {
+    await installationCreatedHandler(context, context.payload.repositories_added)
   })
 }
