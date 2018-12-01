@@ -1,5 +1,5 @@
 // 'Application' is defined but never used
-import { Application } from 'probot' // eslint-disable-line
+import { Application } from "probot"; // eslint-disable-line
 import { checkRunCompletedHandler } from './checkRunCompletedHandler'
 import { installationCreatedHandler } from './installationCreatedHandler'
 
@@ -12,7 +12,16 @@ export = (app: Application) => {
     await installationCreatedHandler(context, context.payload.repositories)
   })
 
-  app.on(['integration_installation_repositories.added', 'installation_repositories.added'], async context => {
-    await installationCreatedHandler(context, context.payload.repositories_added)
-  })
-}
+  app.on(
+    [
+      'integration_installation_repositories.added',
+      'installation_repositories.added'
+    ],
+    async context => {
+      await installationCreatedHandler(
+        context,
+        context.payload.repositories_added
+      )
+    }
+  )
+};

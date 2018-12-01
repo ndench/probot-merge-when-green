@@ -6,7 +6,9 @@ export async function checkRunCompletedHandler (context: any) {
   const checkRun = context.payload.check_run
 
   checkRun.pull_requests.forEach(async (prRef: any) => {
-    const pr = (await github.pullRequests.get(context.repo({ number: prRef.number }))).data
+    const pr = (await github.pullRequests.get(
+      context.repo({ number: prRef.number })
+    )).data
 
     const shouldMerge = pr.labels.find((label: any) => {
       return label.name === MERGE_LABEL
@@ -16,19 +18,28 @@ export async function checkRunCompletedHandler (context: any) {
       return
     }
 
-    const checks = (await github.checks.listForRef(context.repo({ ref: pr.head.ref }))).data
+    const checks = (await github.checks.listForRef(
+      context.repo({ ref: pr.head.ref })
+    )).data
 
     const unsuccessful = checks.check_runs.find((cr: any) => {
       return (
-        cr.status !== 'completed' || (cr.status === 'completed' && cr.conclusion !== 'success' && SUPPORTED_CI.includes(cr.app.owner.login))
+        cr.status !== 'completed' ||
+        (cr.status === 'completed' &&
+          cr.conclusion !== 'success' &&
+          SUPPORTED_CI.includes(cr.app.owner.login))
       )
     })
 
     if (!unsuccessful) {
-      const result = await github.pullRequests.merge(context.repo({ number: pr.number }))
+      const result = await github.pullRequests.merge(
+        context.repo({ number: pr.number })
+      )
 
       if (result.data.merged) {
-        await github.gitdata.deleteReference(context.repo({ ref: `heads/${pr.head.ref}` }))
+        await github.gitdata.deleteReference(
+          context.repo({ ref: `heads/${pr.head.ref}` })
+        )
       }
     }
   })
