@@ -1,4 +1,7 @@
-import { checkRunCompletedHandler } from '../src/checkRunCompletedHandler'
+import {
+  checkRunCompletedHandler,
+  MERGE_LABEL
+} from '../src/checkRunCompletedHandler'
 
 const context = {
   github: {
@@ -35,8 +38,8 @@ test('skip empty check_runs', async () => {
   await checkRunCompletedHandler(context)
 
   expect(context.github.pullRequests.get).not.toHaveBeenCalled()
-  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
+  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
   expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
 })
 
@@ -49,7 +52,62 @@ test('skip pull requests without merge label', async () => {
 
   await checkRunCompletedHandler(context)
 
-  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
+  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
   expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
+})
+
+test('skip pull requests with failing checks', async () => {
+  context.github.pullRequests.get.mockReturnValue({
+    data: {
+      labels: [{ name: MERGE_LABEL }]
+    }
+  })
+
+  context.github.checks.listForRef.mockReturnValue([
+    { status: 'failed', conclusion: 'success' }
+  ])
+
+  await checkRunCompletedHandler(context)
+
+  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
+  expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
+})
+
+test('merge pull requests', async () => {
+  context.github.pullRequests.get.mockReturnValue({
+    data: {
+      number: 1,
+      labels: [{ name: MERGE_LABEL }],
+      head: {
+        ref: '3efb1d'
+      }
+    }
+  })
+
+  context.github.checks.listForRef.mockReturnValue({
+    data: {
+      check_runs: [
+        {
+          status: 'in_progress',
+          conclusion: null,
+          app: { owner: { login: 'circleci' } }
+        }
+      ]
+    }
+  })
+
+  context.github.pullRequests.merge.mockReturnValue({
+    data: {
+      merged: true
+    }
+  })
+
+  await checkRunCompletedHandler(context)
+
+  // FIXME
+  // expect(context.github.pullRequests.merge).toHaveBeenCalledWith(
+  //   { owner: 'owner', repo: 'repo', number: 1 }
+  // )
+  // expect(context.github.gitdata.deleteReference).toHaveBeenCalledWith()
 })
