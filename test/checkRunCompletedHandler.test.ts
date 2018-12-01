@@ -47,8 +47,6 @@ test('skip pull requests without merge label', async () => {
     }
   })
 
-  context.payload.check_run.pull_requests.push({ number: 1 })
-
   await checkRunCompletedHandler(context)
 
   expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
