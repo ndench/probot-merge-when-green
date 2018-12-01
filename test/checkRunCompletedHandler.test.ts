@@ -15,7 +15,7 @@ const context = {
   },
   payload: {
     check_run: {
-      pull_requests: [ { number: 1 }]
+      pull_requests: [{ number: 1 }]
     }
   },
   repo: (obj: object) => {
