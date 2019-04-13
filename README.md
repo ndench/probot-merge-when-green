@@ -2,7 +2,7 @@
 
 # probot-merge-when-green
 
-Tired of waiting for long-running tests before to merge pull requests?
+Tired of waiting for long-running tests before merging pull requests?
 
 Label your pull requests with `merge when green` then let merge when green to patiently "wait" for all tests to pass then merge your pull request.
 
