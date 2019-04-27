@@ -9,12 +9,19 @@ Label your pull requests with `merge when green` then let merge when green to pa
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-1.png)
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-2.png)
 
+## To install in your repository 
+
+Go to https://github.com/apps/merge-when-green
+
+### Requirements
+
 Merge when green only works with Travis CI, and CicleCI with GitHub Checks enabled.
 
 * https://blog.travis-ci.com/2018-05-07-announcing-support-for-github-checks-api-on-travis-ci-com
 * https://circleci.com/docs/2.0/enable-checks/
 
-## Setup
+
+## Running locally
 
 ```sh
 # Install dependencies
