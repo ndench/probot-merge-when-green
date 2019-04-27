@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/phstc/probot-merge-when-green.svg?branch=master)](https://travis-ci.com/phstc/probot-merge-when-green)
 
-# probot-merge-when-green
+# Merge when green
 
 Tired of waiting for long-running tests before merging pull requests?
 
@@ -9,7 +9,7 @@ Label your pull requests with `merge when green` then let merge when green to pa
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-1.png)
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-2.png)
 
-## To install in your repository 
+## Installation instructions 
 
 Go to https://github.com/apps/merge-when-green
 
@@ -21,7 +21,7 @@ Merge when green only works with Travis CI, and CicleCI with GitHub Checks enabl
 * https://circleci.com/docs/2.0/enable-checks/
 
 
-## Running locally
+## Running in development
 
 ```sh
 # Install dependencies
