@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/phstc/probot-merge-when-green.svg?branch=master)](https://travis-ci.com/phstc/probot-merge-when-green)
 
+![Merge when green logo](merge-when-green.png)
+
 # Merge when green
 
 Tired of waiting for long-running tests before merging pull requests?
@@ -9,7 +11,7 @@ Label your pull requests with `merge when green` then let merge when green to pa
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-1.png)
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-2.png)
 
-## Installation instructions 
+## Installation instructions
 
 Go to https://github.com/apps/merge-when-green
 
@@ -33,6 +35,10 @@ yarn run build
 # Run the bot
 yarn start
 ```
+
+## Logo
+
+:clap: design by [Glauber Rodger](https://github.com/rdgr).
 
 ## Contributing
 
