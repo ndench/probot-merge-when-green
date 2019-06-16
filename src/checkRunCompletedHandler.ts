@@ -1,5 +1,4 @@
 // import { Context } from 'probot'
-import findFixableIssues from './findFixableIssues'
 
 export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
@@ -43,20 +42,5 @@ export async function checkRunCompletedHandler (context: any) {
     await github.gitdata.deleteRef(
       context.repo({ ref: `heads/${pr.head.ref}` })
     )
-    // Only close issues if the PR targets the default branch
-    // in order to replicate GitHub's functionality (closing keywords)
-    if (!isTargetDefaultBranch(pr)) return
-
-    await findFixableIssues(pr.body).forEach(async number => closeIssue(context, number))
   })
-}
-
-const isTargetDefaultBranch = (pr: any): boolean =>
-  pr.base.repo.default_branch === pr.base.ref
-
-const closeIssue = async (context: any, number: string) => {
-  // const github = context.github
-  // const issue = (await github.issues.get(context.repo({ number }))).data
-  // if (issue.pull_request) /* skip pull requests */ return
-  // await github.issues.edit(context.repo({ state: 'closed', number }))
 }
