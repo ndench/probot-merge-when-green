@@ -1,6 +1,7 @@
 import {
   checkRunCompletedHandler,
   MERGE_LABEL
+  asda
 } from '../src/checkRunCompletedHandler'
 
 const context = {
