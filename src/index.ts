@@ -1,5 +1,5 @@
 // 'Application' is defined but never used
-import { Application } from "probot"; // eslint-disable-line
+import { Application } from 'probot' // eslint-disable-line no-unused-vars
 import { checkRunCompletedHandler } from './checkRunCompletedHandler'
 import { installationCreatedHandler } from './installationCreatedHandler'
 
@@ -24,4 +24,4 @@ export = (app: Application) => {
       )
     }
   )
-};
+}
