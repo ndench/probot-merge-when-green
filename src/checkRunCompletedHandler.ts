@@ -1,5 +1,3 @@
-// import { Context } from 'probot'
-
 export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
 
