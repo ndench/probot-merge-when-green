@@ -54,7 +54,7 @@ export async function checkRunCompletedHandler (context: any) {
 }
 
 const isTargetDefaultBranch = (pr: any): boolean =>
-  pr.base.repo.default_branch == pr.base.ref
+  pr.base.repo.default_branch === pr.base.ref
 
 const closeIssue = async (context: any, number: string) => {
   const github = context.github
