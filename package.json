@@ -19,7 +19,9 @@
     "lint": "standard **/*.ts --fix",
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "format": "prettier-standard 'src/**/*.ts'"
+
   },
   "dependencies": {
     "probot": "^7.0.0"
@@ -30,8 +32,9 @@
     "eslint-plugin-typescript": "^0.12.0",
     "jest": "^23.4.0",
     "nodemon": "^1.17.2",
-    "smee-client": "^1.0.2",
     "standard": "^10.0.3",
+    "prettier-standard": "^9.1.1",
+    "smee-client": "^1.0.2",
     "ts-jest": "^23.0.0",
     "typescript": "^3.1.1",
     "typescript-eslint-parser": "^20.0.0"
