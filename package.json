@@ -19,8 +19,7 @@
     "lint": "standard **/*.ts --fix",
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
-    "heroku-postbuild": "npm run build",
-    "format": "prettier-standard '**/*.ts'"
+    "heroku-postbuild": "npm run build"
 
   },
   "dependencies": {
@@ -33,7 +32,6 @@
     "jest": "^23.4.0",
     "nodemon": "^1.17.2",
     "standard": "^10.0.3",
-    "prettier-standard": "^9.1.1",
     "smee-client": "^1.0.2",
     "ts-jest": "^23.0.0",
     "typescript": "^3.1.1",
