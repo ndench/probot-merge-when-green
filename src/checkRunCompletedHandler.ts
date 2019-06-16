@@ -55,10 +55,8 @@ const isTargetDefaultBranch = (pr: any): boolean =>
   pr.base.repo.default_branch === pr.base.ref
 
 const closeIssue = async (context: any, number: string) => {
-  const github = context.github
-  const issue = (await github.issues.get(context.repo({ number }))).data
-
-  if (issue.pull_request) /* skip pull requests */ return
-
-  await github.issues.edit(context.repo({ state: 'closed', number }))
+  // const github = context.github
+  // const issue = (await github.issues.get(context.repo({ number }))).data
+  // if (issue.pull_request) /* skip pull requests */ return
+  // await github.issues.edit(context.repo({ state: 'closed', number }))
 }
