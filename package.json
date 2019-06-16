@@ -20,7 +20,7 @@
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
     "heroku-postbuild": "npm run build",
-    "format": "prettier-standard 'src/**/*.ts'"
+    "format": "prettier-standard '**/*.ts'"
 
   },
   "dependencies": {

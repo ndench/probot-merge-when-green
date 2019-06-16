@@ -13,7 +13,9 @@ export async function checkRunCompletedHandler (context: any) {
       context.repo({ number: prRef.number })
     )).data
 
-    const shouldMerge = pr.labels.find((label: any) => label.name === MERGE_LABEL)
+    const shouldMerge = pr.labels.find(
+      (label: any) => label.name === MERGE_LABEL
+    )
 
     if (!shouldMerge) return
 
@@ -21,13 +23,20 @@ export async function checkRunCompletedHandler (context: any) {
       context.repo({ ref: pr.head.ref })
     )).data
 
-    const supportedCheckRuns = checks.check_runs.filter((checkRun: any) => SUPPORTED_CI.includes(checkRun.app.owner.login))
-    if(supportedCheckRuns.length === 0) return
+    const supportedCheckRuns = checks.check_runs.filter((checkRun: any) =>
+      SUPPORTED_CI.includes(checkRun.app.owner.login)
+    )
+    if (supportedCheckRuns.length === 0) return
 
-    const unsuccessfulCheckRun =  checks.check_runs.find((checkRun: any) => checkRun.status !== 'completed' || checkRun.conclusion !== 'success')
-    if(unsuccessfulCheckRun) return
+    const unsuccessfulCheckRun = checks.check_runs.find(
+      (checkRun: any) =>
+        checkRun.status !== 'completed' || checkRun.conclusion !== 'success'
+    )
+    if (unsuccessfulCheckRun) return
 
-    const result = await context.github.pullRequests.merge(context.repo({ number: pr.number }))
+    const result = await context.github.pullRequests.merge(
+      context.repo({ number: pr.number })
+    )
 
     if (!result.data.merged) return
 
@@ -38,11 +47,14 @@ export async function checkRunCompletedHandler (context: any) {
     // in order to replicate GitHub's functionality (closing keywords)
     if (!isTargetDefaultBranch(pr)) return
 
-    await findFixableIssues(pr.body).forEach(async number => closeIssue(context, number))
+    await findFixableIssues(pr.body).forEach(async number =>
+      closeIssue(context, number)
+    )
   })
 }
 
-const isTargetDefaultBranch = (pr: any): boolean => pr.base.repo.default_branch == pr.base.ref
+const isTargetDefaultBranch = (pr: any): boolean =>
+  pr.base.repo.default_branch == pr.base.ref
 
 const closeIssue = async (context: any, number: string) => {
   const github = context.github
