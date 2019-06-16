@@ -47,9 +47,7 @@ export async function checkRunCompletedHandler (context: any) {
     // in order to replicate GitHub's functionality (closing keywords)
     if (!isTargetDefaultBranch(pr)) return
 
-    await findFixableIssues(pr.body).forEach(async number =>
-      closeIssue(context, number)
-    )
+    await findFixableIssues(pr.body).forEach(async number => closeIssue(context, number))
   })
 }
 
