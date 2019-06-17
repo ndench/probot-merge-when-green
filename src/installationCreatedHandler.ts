@@ -1,6 +1,7 @@
+import { Context } from 'probot' // eslint-disable-line no-unused-vars
 import { MERGE_LABEL } from './checkRunCompletedHandler'
 
-async function createLabel (context: any, owner: string, repo: string) {
+async function createLabel (context: Context, owner: string, repo: string) {
   const github = context.github
   const description = 'See: https://github.com/phstc/probot-merge-when-green/'
   const color = '2cbe4e'
@@ -13,7 +14,7 @@ async function createLabel (context: any, owner: string, repo: string) {
   })
 }
 
-export async function installationCreatedHandler (context: any, repos: any) {
+export async function installationCreatedHandler (context: Context, repos: any) {
   repos.forEach(async (item: any) => {
     const [owner, repo] = item.full_name.split('/')
 
