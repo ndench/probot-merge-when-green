@@ -2,16 +2,16 @@ export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
 
 export async function checkRunCompletedHandler (context: any) {
-  for (const prRef of context.payload.check_run.pull_requests) {
+  await Promise.all(context.payload.check_run.pull_requests.map(async (prRef: any) => {
     const pr = (await context.github.pullRequests.get(
       context.repo({ number: prRef.number })
     )).data
 
-    if (!hasMergeLabel(pr)) continue
-    if (!(await isEveryCheckSuccessful(context, pr))) continue
+    if (!hasMergeLabel(pr)) return
+    if (!(await isEveryCheckSuccessful(context, pr))) return
 
     await mergeAndDeleteBranch(context, pr)
-  }
+  }))
 }
 
 const hasMergeLabel = (pr: any) : boolean => pr.labels.find((label: any) => label.name === MERGE_LABEL)
