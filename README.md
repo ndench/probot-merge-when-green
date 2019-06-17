@@ -6,14 +6,15 @@
 
 Tired of waiting for long-running tests before merging pull requests?
 
-Label your pull requests with `merge when green` then let Merge when green to patiently "wait" for all tests to pass then merge your pull request (and delete the pull request branch - you can always restore it).
+Label your pull requests with `merge when green` then let Merge when green to automatically merge your pull requests once all tests have passed.
+
 
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-1.png)
 ![](https://raw.githubusercontent.com/phstc/probot-merge-when-green/master/merge-when-green-2.png)
 
 ## Installation instructions
 
-Go to https://github.com/apps/merge-when-green
+Visit https://github.com/marketplace/merge-when-green
 
 ### Requirements
 

@@ -1,7 +1,7 @@
 {
   "name": "probot-merge-when-green",
   "version": "1.0.0",
-  "description": "Automatically merge pull requests when all CI statuses succeed",
+  "description": "Automatically merge pull requests when all tests have passed",
   "author": "Pablo Cantero <pablohstc@gmail.com> (https://github.com/phstc/probot-merge-when-green)",
   "license": "ISC",
   "repository": "https://github.com/phstc/probot-merge-when-green.git",
