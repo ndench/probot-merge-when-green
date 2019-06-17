@@ -78,7 +78,7 @@ test('skip pull requests with failing checks', async () => {
   expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
 })
 
-test.only('merge pull requests', async () => {
+test('merge pull requests', async () => {
   context.github.pullRequests.get.mockReturnValue({
     data: {
       number: 1,
