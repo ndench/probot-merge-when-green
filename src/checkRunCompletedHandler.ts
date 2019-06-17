@@ -25,7 +25,7 @@ export async function checkRunCompletedHandler (context: any) {
     )
     if (supportedCheckRuns.length === 0) return
 
-    const unsuccessfulCheckRun = checks.check_runs.find(
+    const unsuccessfulCheckRun = supportedCheckRuns.find(
       (checkRun: any) =>
         checkRun.status !== 'completed' || checkRun.conclusion !== 'success'
     )
