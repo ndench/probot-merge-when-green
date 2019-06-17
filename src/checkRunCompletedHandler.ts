@@ -2,26 +2,15 @@ export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
 
 export async function checkRunCompletedHandler (context: any) {
-  const github = context.github
-  const checkRun = context.payload.check_run
-
-  checkRun.pull_requests.forEach(async (prRef: any) => {
-    const pr = (await github.pullRequests.get(
+  context.payload.check_run.pull_requests.forEach(async (prRef: any) => {
+    const pr = (await context.github.pullRequests.get(
       context.repo({ number: prRef.number })
     )).data
 
     if (!hasMergeLabel(pr)) return
     if (!(await isEveryCheckSuccessful(context, pr))) return
 
-    const result = await context.github.pullRequests.merge(
-      context.repo({ number: pr.number })
-    )
-
-    if (!result.data.merged) return
-
-    await github.gitdata.deleteRef(
-      context.repo({ ref: `heads/${pr.head.ref}` })
-    )
+    await mergeAndDeleteBranch(context, pr)
   })
 }
 
@@ -39,5 +28,17 @@ const isEveryCheckSuccessful = async (context: any, pr: any): Promise<boolean> =
   return supportedCheckRuns.every(
     (checkRun: any) =>
       checkRun.status === 'completed' && checkRun.conclusion === 'success'
+  )
+}
+
+const mergeAndDeleteBranch = async (context: any, pr: any): Promise<void> => {
+  const result = await context.github.pullRequests.merge(
+    context.repo({ number: pr.number })
+  )
+
+  if (!result.data.merged) return
+
+  await context.github.gitdata.deleteRef(
+    context.repo({ ref: `heads/${pr.head.ref}` })
   )
 }
