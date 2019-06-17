@@ -11,21 +11,7 @@ export async function checkRunCompletedHandler (context: any) {
     )).data
 
     if (!hasMergeLabel(pr)) return
-
-    const checks = (await context.github.checks.listForRef(
-      context.repo({ ref: pr.head.ref })
-    )).data
-
-    const supportedCheckRuns = checks.check_runs.filter((checkRun: any) =>
-      SUPPORTED_CI.includes(checkRun.app.owner.login)
-    )
-    if (supportedCheckRuns.length === 0) return
-
-    const unsuccessfulCheckRun = supportedCheckRuns.some(
-      (checkRun: any) =>
-        checkRun.status !== 'completed' || checkRun.conclusion !== 'success'
-    )
-    if (unsuccessfulCheckRun) return
+    if (!(await isEveryCheckSuccessful(context, pr))) return
 
     const result = await context.github.pullRequests.merge(
       context.repo({ number: pr.number })
@@ -40,3 +26,18 @@ export async function checkRunCompletedHandler (context: any) {
 }
 
 const hasMergeLabel = (pr: any) : boolean => pr.labels.find((label: any) => label.name === MERGE_LABEL)
+const isEveryCheckSuccessful = async (context: any, pr: any): Promise<boolean> => {
+  const checks = (await context.github.checks.listForRef(
+    context.repo({ ref: pr.head.ref })
+  )).data
+
+  const supportedCheckRuns = checks.check_runs.filter((checkRun: any) =>
+    SUPPORTED_CI.includes(checkRun.app.owner.login)
+  )
+  if (supportedCheckRuns.length === 0) return false
+
+  return supportedCheckRuns.every(
+    (checkRun: any) =>
+      checkRun.status === 'completed' && checkRun.conclusion === 'success'
+  )
+}
