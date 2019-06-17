@@ -62,8 +62,9 @@ test('skip if no merge label', async () => {
 })
 
 test('skip if failing checks', async () => {
-  context.github.pullRequests.get.mockReturnValue({
+  context.github.pullRequests.get.mockResolvedValue({
     data: {
+      number: 1,
       labels: [{ name: MERGE_LABEL }],
       head: {
         ref: '3efb1d'
@@ -71,7 +72,7 @@ test('skip if failing checks', async () => {
     }
   })
 
-  context.github.checks.listForRef.mockReturnValue({
+  context.github.checks.listForRef.mockResolvedValue({
     data: {
       check_runs: [
         {
@@ -84,6 +85,11 @@ test('skip if failing checks', async () => {
     }
   })
 
+  context.github.pullRequests.merge.mockResolvedValue({
+    data: {
+      merged: true
+    }
+  })
   await checkRunCompletedHandler(context)
 
   expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
@@ -91,7 +97,7 @@ test('skip if failing checks', async () => {
 })
 
 test('merge pull requests', async () => {
-  context.github.pullRequests.get.mockReturnValue({
+  context.github.pullRequests.get.mockResolvedValue({
     data: {
       number: 1,
       labels: [{ name: MERGE_LABEL }],
@@ -101,7 +107,7 @@ test('merge pull requests', async () => {
     }
   })
 
-  context.github.checks.listForRef.mockReturnValue({
+  context.github.checks.listForRef.mockResolvedValue({
     data: {
       check_runs: [
         {
@@ -114,7 +120,7 @@ test('merge pull requests', async () => {
     }
   })
 
-  context.github.pullRequests.merge.mockReturnValue({
+  context.github.pullRequests.merge.mockResolvedValue({
     data: {
       merged: true
     }
@@ -122,9 +128,6 @@ test('merge pull requests', async () => {
 
   await checkRunCompletedHandler(context)
 
-  // FIXME
-  // expect(context.github.pullRequests.merge).toHaveBeenCalledWith(
-  //   { owner: 'owner', repo: 'repo', number: 1 }
-  // )
-  // expect(context.github.gitdata.deleteRef).toHaveBeenCalledWith()
+  expect(context.github.pullRequests.merge).toHaveBeenCalled()
+  expect(context.github.gitdata.deleteRef).toHaveBeenCalled()
 })
