@@ -10,11 +10,7 @@ export async function checkRunCompletedHandler (context: any) {
       context.repo({ number: prRef.number })
     )).data
 
-    const shouldMerge = pr.labels.find(
-      (label: any) => label.name === MERGE_LABEL
-    )
-
-    if (!shouldMerge) return
+    if (!hasMergeLabel(pr)) return
 
     const checks = (await context.github.checks.listForRef(
       context.repo({ ref: pr.head.ref })
@@ -25,7 +21,7 @@ export async function checkRunCompletedHandler (context: any) {
     )
     if (supportedCheckRuns.length === 0) return
 
-    const unsuccessfulCheckRun = supportedCheckRuns.find(
+    const unsuccessfulCheckRun = supportedCheckRuns.some(
       (checkRun: any) =>
         checkRun.status !== 'completed' || checkRun.conclusion !== 'success'
     )
@@ -42,3 +38,5 @@ export async function checkRunCompletedHandler (context: any) {
     )
   })
 }
+
+const hasMergeLabel = (pr: any) : boolean => pr.labels.find((label: any) => label.name === MERGE_LABEL)
