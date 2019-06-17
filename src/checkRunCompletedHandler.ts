@@ -1,8 +1,10 @@
+import { Context } from 'probot' // eslint-disable-line no-unused-vars
+import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
 export const MERGE_LABEL = 'merge when green'
 const SUPPORTED_CI = ['circleci', 'travis-ci']
 
-export async function checkRunCompletedHandler (context: any) {
-  await Promise.all(context.payload.check_run.pull_requests.map(async (prRef: any) => {
+export async function checkRunCompletedHandler (context: Context) {
+  await Promise.all(context.payload.check_run.pull_requests.map(async (prRef: Github.ChecksListForRefResponseCheckRunsItemPullRequestsItem) => {
     const pr = (await context.github.pullRequests.get(
       context.repo({ number: prRef.number })
     )).data
@@ -14,24 +16,25 @@ export async function checkRunCompletedHandler (context: any) {
   }))
 }
 
-const hasMergeLabel = (pr: any) : boolean => pr.labels.find((label: any) => label.name === MERGE_LABEL)
-const isEveryCheckSuccessful = async (context: any, pr: any): Promise<boolean> => {
+const hasMergeLabel = (pr: Github.PullRequestsGetResponse) : boolean => pr.labels.some((label: Github.PullRequestsGetResponseLabelsItem) => label.name === MERGE_LABEL)
+const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsGetResponse): Promise<boolean> => {
   const checks = (await context.github.checks.listForRef(
     context.repo({ ref: pr.head.ref })
   )).data
 
-  const supportedCheckRuns = checks.check_runs.filter((checkRun: any) =>
+  // Github.ChecksListForRefResponse
+  const supportedCheckRuns = checks.check_runs.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
     SUPPORTED_CI.includes(checkRun.app.owner.login)
   )
   if (supportedCheckRuns.length === 0) return false
 
   return supportedCheckRuns.every(
-    (checkRun: any) =>
+    (checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
       checkRun.status === 'completed' && checkRun.conclusion === 'success'
   )
 }
 
-const mergeAndDeleteBranch = async (context: any, pr: any): Promise<void> => {
+const mergeAndDeleteBranch = async (context: Context, pr: Github.PullRequestsGetResponse): Promise<void> => {
   const result = await context.github.pullRequests.merge(
     context.repo({ number: pr.number })
   )
