@@ -16,7 +16,7 @@ beforeEach(() => {
         listForRef: jest.fn()
       },
       gitdata: {
-        deleteReference: jest.fn()
+        deleteRef: jest.fn()
       }
     },
     payload: {
@@ -36,7 +36,7 @@ beforeEach(() => {
   }
 })
 
-test('skip empty check_runs', async () => {
+test('skip if no pull requests', async () => {
   context.payload.check_run.pull_requests = []
 
   await checkRunCompletedHandler(context)
@@ -44,10 +44,10 @@ test('skip empty check_runs', async () => {
   expect(context.github.pullRequests.get).not.toHaveBeenCalled()
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
   expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
-  expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
+  expect(context.github.gitdata.deleteRef).not.toHaveBeenCalled()
 })
 
-test('skip pull requests without merge label', async () => {
+test('skip if no merge label', async () => {
   context.github.pullRequests.get.mockReturnValue({
     data: {
       labels: []
@@ -58,24 +58,36 @@ test('skip pull requests without merge label', async () => {
 
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
   expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
-  expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
+  expect(context.github.gitdata.deleteRef).not.toHaveBeenCalled()
 })
 
-test('skip pull requests with failing checks', async () => {
+test('skip if failing checks', async () => {
   context.github.pullRequests.get.mockReturnValue({
     data: {
-      labels: [{ name: MERGE_LABEL }]
+      labels: [{ name: MERGE_LABEL }],
+      head: {
+        ref: '3efb1d'
+      }
     }
   })
 
-  context.github.checks.listForRef.mockReturnValue([
-    { status: 'failed', conclusion: 'success' }
-  ])
+  context.github.checks.listForRef.mockReturnValue({
+    data: {
+      check_runs: [
+        {
+          pull_requests: [{ number: 1 }],
+          status: 'completed',
+          conclusion: 'failed',
+          app: { owner: { login: 'circleci' } }
+        }
+      ]
+    }
+  })
 
   await checkRunCompletedHandler(context)
 
   expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
-  expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
+  expect(context.github.gitdata.deleteRef).not.toHaveBeenCalled()
 })
 
 test('merge pull requests', async () => {
@@ -114,5 +126,5 @@ test('merge pull requests', async () => {
   // expect(context.github.pullRequests.merge).toHaveBeenCalledWith(
   //   { owner: 'owner', repo: 'repo', number: 1 }
   // )
-  // expect(context.github.gitdata.deleteReference).toHaveBeenCalledWith()
+  // expect(context.github.gitdata.deleteRef).toHaveBeenCalledWith()
 })
