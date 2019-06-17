@@ -3,34 +3,38 @@ import {
   MERGE_LABEL
 } from '../src/checkRunCompletedHandler'
 
-const context = {
-  github: {
-    pullRequests: {
-      get: jest.fn(),
-      merge: jest.fn()
-    },
-    checks: {
-      listForRef: jest.fn()
-    },
-    gitdata: {
-      deleteReference: jest.fn()
-    }
-  },
-  payload: {
-    check_run: {
-      pull_requests: [{ number: 1 }]
-    }
-  },
-  repo: (obj: object) => {
-    return Object.assign(
-      {
-        owner: 'owner',
-        repo: 'repo'
+let context:any
+
+beforeEach(() => {
+  context = {
+    github: {
+      pullRequests: {
+        get: jest.fn(),
+        merge: jest.fn()
       },
-      obj
-    )
+      checks: {
+        listForRef: jest.fn()
+      },
+      gitdata: {
+        deleteReference: jest.fn()
+      }
+    },
+    payload: {
+      check_run: {
+        pull_requests: [{ number: 1 }]
+      }
+    },
+    repo: (obj: object) => {
+      return Object.assign(
+        {
+          owner: 'owner',
+          repo: 'repo'
+        },
+        obj
+      )
+    }
   }
-}
+})
 
 test('skip empty check_runs', async () => {
   context.payload.check_run.pull_requests = []
@@ -74,7 +78,7 @@ test('skip pull requests with failing checks', async () => {
   expect(context.github.gitdata.deleteReference).not.toHaveBeenCalled()
 })
 
-test('merge pull requests', async () => {
+test.only('merge pull requests', async () => {
   context.github.pullRequests.get.mockReturnValue({
     data: {
       number: 1,
@@ -89,8 +93,9 @@ test('merge pull requests', async () => {
     data: {
       check_runs: [
         {
-          status: 'in_progress',
-          conclusion: null,
+          pull_requests: [{ number: 1 }],
+          status: 'completed',
+          conclusion: 'success',
           app: { owner: { login: 'circleci' } }
         }
       ]
