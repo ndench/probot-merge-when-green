@@ -1,0 +1,5 @@
+supportedCi:
+  - circleci
+  - travis-ci
+
+ 
