@@ -1,6 +1,7 @@
 import { Context } from 'probot' // eslint-disable-line no-unused-vars
 import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
-import { SUPPORTED_CI, MERGE_LABEL } from './constants'
+import { MERGE_LABEL } from './constants'
+import getConfiguration from './configuration'
 
 export default async function mergeIfGreen (context: Context, pr: Github.PullRequestsGetResponse) {
   if (!hasMergeLabel(pr)) return
@@ -15,9 +16,11 @@ const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsG
     context.repo({ ref: pr.head.ref })
   )).data
 
+  const config = await getConfiguration(context)
+
   // Github.ChecksListForRefResponse
   const supportedCheckRuns = checks.check_runs.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
-    SUPPORTED_CI.includes(checkRun.app.owner.login)
+    config.supportedCi.includes(checkRun.app.owner.login)
   )
   if (supportedCheckRuns.length === 0) return false
 
