@@ -20,10 +20,10 @@
     "test": "jest && standard **/*.ts",
     "test:watch": "jest --watch --notify --notifyMode=change --coverage",
     "heroku-postbuild": "npm run build"
+
   },
   "dependencies": {
-    "probot": "^7.0.0",
-    "probot-config": "^1.1.0"
+    "probot": "^7.0.0"
   },
   "devDependencies": {
     "@types/jest": "^23.1.5",
