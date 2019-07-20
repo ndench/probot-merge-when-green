@@ -23,9 +23,9 @@ By default, Merge when green will only watch for Travis CI and CircleCI checks. 
 
 ```yaml
 requiredChecks:
-    - circleci
-    - travis-ci
-    - my-ci-check
+  - circleci
+  - travis-ci
+  - my-ci-check
 ```
 
 ### Resources
