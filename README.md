@@ -28,7 +28,7 @@ requiredChecks:
   - my-ci-check
 ```
 
-### Resources
+#### Travis CI and CicleCI
 
 To work with Travis CI and CicleCI make sure GitHub Checks are enabled.
 
