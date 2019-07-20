@@ -20,7 +20,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsG
 
   // Github.ChecksListForRefResponse
   const supportedCheckRuns = checks.check_runs.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
-    config.supportedCi.includes(checkRun.app.owner.login)
+    config.requiredCi.includes(checkRun.app.owner.login)
   )
   if (supportedCheckRuns.length === 0) return false
 

@@ -5,6 +5,7 @@ let context:any
 
 beforeEach(() => {
   context = {
+    config: jest.fn().mockImplementation((_fileName, defaultConfig) => defaultConfig),
     github: {
       pullRequests: {
         get: jest.fn(),
