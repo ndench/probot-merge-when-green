@@ -16,9 +16,21 @@ Label your pull requests with `merge when green` then let Merge when green to au
 
 Visit https://github.com/marketplace/merge-when-green
 
-### Requirements
+### Configuration
 
-Merge when green only works with Travis CI, and CicleCI with GitHub Checks enabled.
+By default, Merge when green will only watch for Travis CI and CircleCI checks. To watch for other checks, create a
+`.github/merge-when-green.yml` file:
+
+```yaml
+requiredChecks:
+    - circleci
+    - travis-ci
+    - my-ci-check
+```
+
+### Resources
+
+To work with Travis CI and CicleCI make sure GitHub Checks are enabled.
 
 * https://blog.travis-ci.com/2018-05-07-announcing-support-for-github-checks-api-on-travis-ci-com
 * https://circleci.com/docs/2.0/enable-checks/
