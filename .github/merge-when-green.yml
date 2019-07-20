@@ -1,2 +1,2 @@
 requiredChecks:
-  - my-ci-check
+  - travis-ci
