@@ -16,7 +16,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsG
     context.repo({ ref: pr.head.ref })
   )).data
 
-  const config = await getConfiguration(context)
+  const config = await getConfiguration(context) as any
 
   // Github.ChecksListForRefResponse
   const supportedCheckRuns = checks.check_runs.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
