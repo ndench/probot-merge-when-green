@@ -4,7 +4,7 @@ import { MERGE_LABEL } from '../src/constants'
 jest.mock('../src/configuration', () => ({
   getConfiguration: () => ({
     requiredChecks: ['circleci'],
-    requiredStatuses: ['myci']
+    requiredStatuses: ['jenkins']
   })
 }))
 
@@ -97,7 +97,7 @@ test('skip if failing statuses', async () => {
   context.github.repos.listStatusesForRef.mockResolvedValue({
     data: [
       {
-        context: 'my-status',
+        context: 'jenkins',
         state: 'failed'
       }
     ]
@@ -142,7 +142,7 @@ function getSuccessStatuses () {
   return {
     data: [
       {
-        context: 'myci',
+        context: 'jenkins',
         state: 'success'
       }
     ]

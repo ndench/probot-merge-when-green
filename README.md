@@ -18,15 +18,22 @@ Visit https://github.com/marketplace/merge-when-green
 
 ### Configuration
 
-By default, Merge when green will only watch for Travis CI and CircleCI checks. To watch for other checks, create a
-`.github/merge-when-green.yml` file:
+Github has two different types of CI runs, "Checks" and "Statuses". Both run against PRs except Checks result in a 
+"Checks" tab being available on the PR to give more information, while a Status is just a green tick (or red cross).
+See [this GitHub article](https://help.github.com/en/articles/about-status-checks) for more information.
+
+Merge when green supports both Checks and Statuses. You can configure which ones must pass for the PR to be considered
+"green" in order for it to be merged. Create a `.github/merge-when-green.yml` file to list the require checks/statuses:
 
 ```yaml
 requiredChecks:
   - circleci
   - travis-ci
-  - my-ci-check
+requiredStatuses:
+  - jenkins
 ```
+
+By default, Merge when green will only require the `cicleci` and `travis-ci` checks.
 
 #### Travis CI and CicleCI
 
