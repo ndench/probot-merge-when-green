@@ -7,7 +7,7 @@ let context:any
 beforeEach(() => {
   context = {
     github: {
-      pullRequests: {
+      pulls: {
         get: jest.fn()
       }
     },
@@ -31,7 +31,7 @@ beforeEach(() => {
 test('calls mergeIfGreen for all pull requests', async () => {
   const pr = context.payload.check_run.pull_requests[0]
 
-  context.github.pullRequests.get.mockResolvedValue({
+  context.github.pulls.get.mockResolvedValue({
     data: pr
   })
   await checkRunCompletedHandler(context)

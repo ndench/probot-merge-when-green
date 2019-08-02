@@ -7,14 +7,14 @@ beforeEach(() => {
   context = {
     config: jest.fn().mockImplementation((_fileName, defaultConfig) => Promise.resolve(defaultConfig)),
     github: {
-      pullRequests: {
+      pulls: {
         get: jest.fn(),
         merge: jest.fn()
       },
       checks: {
         listForRef: jest.fn()
       },
-      gitdata: {
+      git: {
         deleteRef: jest.fn()
       }
     },
@@ -35,8 +35,8 @@ test('skip if no merge label', async () => {
   await mergeIfGreen(context, pr)
 
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
-  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
-  expect(context.github.gitdata.deleteRef).not.toHaveBeenCalled()
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
 test('skip if failing checks', async () => {
@@ -61,15 +61,15 @@ test('skip if failing checks', async () => {
     }
   })
 
-  context.github.pullRequests.merge.mockResolvedValue({
+  context.github.pulls.merge.mockResolvedValue({
     data: {
       merged: true
     }
   })
   await mergeIfGreen(context, pr)
 
-  expect(context.github.pullRequests.merge).not.toHaveBeenCalled()
-  expect(context.github.gitdata.deleteRef).not.toHaveBeenCalled()
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
 test('merge pull requests', async () => {
@@ -94,7 +94,7 @@ test('merge pull requests', async () => {
     }
   })
 
-  context.github.pullRequests.merge.mockResolvedValue({
+  context.github.pulls.merge.mockResolvedValue({
     data: {
       merged: true
     }
@@ -102,6 +102,6 @@ test('merge pull requests', async () => {
 
   await mergeIfGreen(context, pr)
 
-  expect(context.github.pullRequests.merge).toHaveBeenCalled()
-  expect(context.github.gitdata.deleteRef).toHaveBeenCalled()
+  expect(context.github.pulls.merge).toHaveBeenCalled()
+  expect(context.github.git.deleteRef).toHaveBeenCalled()
 })

@@ -3,15 +3,15 @@ import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
 import { MERGE_LABEL } from './constants'
 import getConfiguration from './configuration'
 
-export default async function mergeIfGreen (context: Context, pr: Github.PullRequestsGetResponse) {
+export default async function mergeIfGreen (context: Context, pr: Github.PullsGetResponse) {
   if (!hasMergeLabel(pr)) return
   if (!(await isEveryCheckSuccessful(context, pr))) return
 
   await mergeAndDeleteBranch(context, pr)
 }
 
-const hasMergeLabel = (pr: Github.PullRequestsGetResponse) : boolean => pr.labels.some((label: Github.PullRequestsGetResponseLabelsItem) => label.name === MERGE_LABEL)
-const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsGetResponse): Promise<boolean> => {
+const hasMergeLabel = (pr: Github.PullsGetResponse) : boolean => pr.labels.some((label: Github.PullsGetResponseLabelsItem) => label.name === MERGE_LABEL)
+const isEveryCheckSuccessful = async (context: Context, pr: Github.PullsGetResponse): Promise<boolean> => {
   const checks = (await context.github.checks.listForRef(
     context.repo({ ref: pr.head.ref })
   )).data
@@ -30,14 +30,14 @@ const isEveryCheckSuccessful = async (context: Context, pr: Github.PullRequestsG
   )
 }
 
-const mergeAndDeleteBranch = async (context: Context, pr: Github.PullRequestsGetResponse): Promise<void> => {
-  const result = await context.github.pullRequests.merge(
+const mergeAndDeleteBranch = async (context: Context, pr: Github.PullsGetResponse): Promise<void> => {
+  const result = await context.github.pulls.merge(
     context.repo({ number: pr.number })
   )
 
   if (!result.data.merged) return
 
-  await context.github.gitdata.deleteRef(
+  await context.github.git.deleteRef(
     context.repo({ ref: `heads/${pr.head.ref}` })
   )
 }

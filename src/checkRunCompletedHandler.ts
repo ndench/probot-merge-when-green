@@ -4,7 +4,7 @@ import mergeIfGreen from './mergeIfGreen'
 
 export default async function checkRunCompletedHandler (context: Context) {
   await Promise.all(context.payload.check_run.pull_requests.map(async (prRef: Github.ChecksListForRefResponseCheckRunsItemPullRequestsItem) => {
-    const pr = (await context.github.pullRequests.get(
+    const pr = (await context.github.pulls.get(
       context.repo({ number: prRef.number })
     )).data
 
