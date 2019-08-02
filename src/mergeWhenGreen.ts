@@ -3,6 +3,7 @@ import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
 import { MERGE_LABEL } from './constants'
 import getConfiguration from './configuration'
 
+/* eslint-disable no-undef, no-unused-vars */
 /**
  * This represents the properties of a PR we require in order to merge it.
  * It's required because there are multiple ways to get a PR from Github, and their types do not overlap.
@@ -13,8 +14,9 @@ interface PullType {
   head: { ref: string }
   labels: { name: string }[]
 }
+/* eslint-enable no-undef, no-unused-vars */
 
-export default async function mergeWhenGreen (context: Context, pr: Github.PullsGetResponse) {
+export default async function mergeWhenGreen (context: Context, pr: PullType) {
   if (!hasMergeLabel(pr)) return
   if (!(await isEveryCheckSuccessful(context, pr))) return
 
