@@ -19,6 +19,7 @@ interface PullType {
 export default async function mergeWhenGreen (context: Context, pr: PullType) {
   if (!hasMergeLabel(pr)) return
   if (!(await isEveryCheckSuccessful(context, pr))) return
+  if (!(await isEveryStatusSuccessful(context, pr))) return
 
   await mergeAndDeleteBranch(context, pr)
 }
@@ -40,6 +41,23 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
   return supportedCheckRuns.every(
     (checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
       checkRun.status === 'completed' && checkRun.conclusion === 'success'
+  )
+}
+const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<boolean> => {
+  const statuses = (await context.github.repos.listStatusesForRef(
+    context.repo({ ref: pr.head.ref })
+  )).data
+
+  const { requiredStatuses } = await getConfiguration(context)
+
+  const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) =>
+    requiredStatuses.includes(statusItem.context)
+  )
+  if (supportedStatuses.length === 0) return false
+
+  return supportedStatuses.every(
+    (statusItem: Github.ReposListStatusesForRefResponseItem) =>
+      statusItem.state === 'success'
   )
 }
 
