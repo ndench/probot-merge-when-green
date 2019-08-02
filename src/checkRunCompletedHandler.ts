@@ -1,6 +1,6 @@
 import { Context } from 'probot' // eslint-disable-line no-unused-vars
 import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
-import mergeIfGreen from './mergeIfGreen'
+import mergeWhenGreen from './mergeWhenGreen'
 
 export default async function checkRunCompletedHandler (context: Context) {
   await Promise.all(context.payload.check_run.pull_requests.map(async (prRef: Github.ChecksListForRefResponseCheckRunsItemPullRequestsItem) => {
@@ -8,6 +8,6 @@ export default async function checkRunCompletedHandler (context: Context) {
       context.repo({ number: prRef.number })
     )).data
 
-    await mergeIfGreen(context, pr)
+    await mergeWhenGreen(context, pr)
   }))
 }

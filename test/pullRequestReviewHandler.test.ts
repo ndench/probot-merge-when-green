@@ -1,6 +1,6 @@
-import mergeIfGreen from '../src/mergeIfGreen'
+import mergeWhenGreen from '../src/mergeWhenGreen'
 import pullRequestReviewHandler from '../src/pullRequestReviewHandler'
-jest.mock('../src/mergeIfGreen')
+jest.mock('../src/mergeWhenGreen')
 
 let context:any
 
@@ -15,8 +15,8 @@ beforeEach(() => {
   }
 })
 
-test('call mergeIfGreen', async () => {
+test('call mergeWhenGreen', async () => {
   await pullRequestReviewHandler(context)
 
-  expect(mergeIfGreen).toBeCalledWith(context, context.payload.pull_request)
+  expect(mergeWhenGreen).toBeCalledWith(context, context.payload.pull_request)
 })

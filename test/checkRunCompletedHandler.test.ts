@@ -1,6 +1,6 @@
-import mergeIfGreen from '../src/mergeIfGreen'
+import mergeWhenGreen from '../src/mergeWhenGreen'
 import checkRunCompletedHandler from '../src/checkRunCompletedHandler'
-jest.mock('../src/mergeIfGreen')
+jest.mock('../src/mergeWhenGreen')
 
 let context:any
 
@@ -28,7 +28,7 @@ beforeEach(() => {
   }
 })
 
-test('calls mergeIfGreen for all pull requests', async () => {
+test('calls mergeWhenGreen for all pull requests', async () => {
   const pr = context.payload.check_run.pull_requests[0]
 
   context.github.pulls.get.mockResolvedValue({
@@ -36,5 +36,5 @@ test('calls mergeIfGreen for all pull requests', async () => {
   })
   await checkRunCompletedHandler(context)
 
-  expect(mergeIfGreen).toBeCalledWith(context, pr)
+  expect(mergeWhenGreen).toBeCalledWith(context, pr)
 })

@@ -1,4 +1,4 @@
-import mergeIfGreen from '../src/mergeIfGreen'
+import mergeWhenGreen from '../src/mergeWhenGreen'
 import { MERGE_LABEL } from '../src/constants'
 
 let context:any
@@ -32,7 +32,7 @@ beforeEach(() => {
 
 test('skip if no merge label', async () => {
   const pr:any = { labels: [] }
-  await mergeIfGreen(context, pr)
+  await mergeWhenGreen(context, pr)
 
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
@@ -66,7 +66,7 @@ test('skip if failing checks', async () => {
       merged: true
     }
   })
-  await mergeIfGreen(context, pr)
+  await mergeWhenGreen(context, pr)
 
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
@@ -100,7 +100,7 @@ test('merge pull requests', async () => {
     }
   })
 
-  await mergeIfGreen(context, pr)
+  await mergeWhenGreen(context, pr)
 
   expect(context.github.pulls.merge).toHaveBeenCalled()
   expect(context.github.git.deleteRef).toHaveBeenCalled()

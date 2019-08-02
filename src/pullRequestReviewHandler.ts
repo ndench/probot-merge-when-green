@@ -1,9 +1,9 @@
 import { Context } from 'probot' // eslint-disable-line no-unused-vars
-import mergeIfGreen from './mergeIfGreen'
+import mergeWhenGreen from './mergeWhenGreen'
 
 export default async function pullRequestReviewHandler (context: Context) {
   if (context.payload.review.state !== 'approved') return
   if (context.payload.pull_request.state !== 'open') return
 
-  await mergeIfGreen(context, context.payload.pull_request)
+  await mergeWhenGreen(context, context.payload.pull_request)
 }

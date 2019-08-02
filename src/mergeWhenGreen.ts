@@ -3,7 +3,7 @@ import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
 import { MERGE_LABEL } from './constants'
 import getConfiguration from './configuration'
 
-export default async function mergeIfGreen (context: Context, pr: Github.PullsGetResponse) {
+export default async function mergeWhenGreen (context: Context, pr: Github.PullsGetResponse) {
   if (!hasMergeLabel(pr)) return
   if (!(await isEveryCheckSuccessful(context, pr))) return
 
