@@ -32,7 +32,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: Github.PullsGetRespo
 
 const mergeAndDeleteBranch = async (context: Context, pr: Github.PullsGetResponse): Promise<void> => {
   const result = await context.github.pulls.merge(
-    context.repo({ number: pr.number })
+    context.repo({ pull_number: pr.number })
   )
 
   if (!result.data.merged) return
