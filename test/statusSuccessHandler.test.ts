@@ -1,5 +1,5 @@
 import mergeWhenGreen from '../src/mergeWhenGreen'
-import statusSuccessHandler from '../src/statusSuccessHandler';
+import statusSuccessHandler from '../src/statusSuccessHandler'
 jest.mock('../src/mergeWhenGreen')
 
 let context:any
