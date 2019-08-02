@@ -26,17 +26,18 @@ export default async function mergeWhenGreen (context: Context, pr: PullType) {
 
 const hasMergeLabel = (pr: PullType) : boolean => pr.labels.some((label) => label.name === MERGE_LABEL)
 const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<boolean> => {
-  const checks = (await context.github.checks.listForRef(
+  const checkRuns = (await context.github.checks.listForRef(
     context.repo({ ref: pr.head.ref })
-  )).data
+  )).data.check_runs
 
   const { requiredChecks } = await getConfiguration(context)
 
   // Github.ChecksListForRefResponse
-  const supportedCheckRuns = checks.check_runs.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
+  const supportedCheckRuns = checkRuns.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
     requiredChecks.includes(checkRun.app.owner.login)
   )
-  if (supportedCheckRuns.length === 0) return false
+
+  if (supportedCheckRuns.length !== requiredChecks.length) return false
 
   return supportedCheckRuns.every(
     (checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
@@ -53,7 +54,7 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
   const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) =>
     requiredStatuses.includes(statusItem.context)
   )
-  if (supportedStatuses.length === 0) return false
+  if (supportedStatuses.length !== supportedStatuses.length) return false
 
   return supportedStatuses.every(
     (statusItem: Github.ReposListStatusesForRefResponseItem) =>

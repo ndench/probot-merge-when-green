@@ -1,14 +1,12 @@
 import mergeWhenGreen from '../src/mergeWhenGreen'
 import { MERGE_LABEL } from '../src/constants'
 
-jest.mock('../src/configuration', () => ({
-  getConfiguration: () => ({
-    requiredChecks: ['circleci'],
-    requiredStatuses: ['jenkins']
-  })
-}))
-
 let context:any
+let mockConfiguration:any
+
+jest.mock('../src/configuration', () => ({
+  getConfiguration: () => (mockConfiguration)
+}))
 
 beforeEach(() => {
   context = {
@@ -40,7 +38,7 @@ beforeEach(() => {
   }
 })
 
-test('skip if no merge label', async () => {
+test('skip when no merge label', async () => {
   const pr: any = {labels: []}
   await mergeWhenGreen(context, pr)
 
@@ -50,7 +48,10 @@ test('skip if no merge label', async () => {
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
-test('skip if failing checks', async () => {
+test('skip when failing checks but passing statuses', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
   const pr: any = {
     number: 1,
     labels: [{name: MERGE_LABEL}],
@@ -59,12 +60,16 @@ test('skip if failing checks', async () => {
     }
   }
 
-  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses())
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses
+  }
+
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
   context.github.checks.listForRef.mockResolvedValue({
     data: {
       check_runs: [
         {
-          pull_requests: [pr],
           status: 'completed',
           conclusion: 'failed',
           app: {owner: {login: 'circleci'}}
@@ -84,7 +89,10 @@ test('skip if failing checks', async () => {
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
-test('skip if failing statuses', async () => {
+test('skip when passing checks but failing statuses', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
   const pr: any = {
     number: 1,
     labels: [{name: MERGE_LABEL}],
@@ -93,7 +101,12 @@ test('skip if failing statuses', async () => {
     }
   }
 
-  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(pr))
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
   context.github.repos.listStatusesForRef.mockResolvedValue({
     data: [
       {
@@ -114,7 +127,10 @@ test('skip if failing statuses', async () => {
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
-test('merge pull requests', async () => {
+test('merge pull requests when passing checks and statuses', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
   const pr: any = {
     number: 1,
     labels: [{name: MERGE_LABEL}],
@@ -123,8 +139,13 @@ test('merge pull requests', async () => {
     }
   }
 
-  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(pr))
-  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses())
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
 
   context.github.pulls.merge.mockResolvedValue({
     data: {
@@ -138,28 +159,31 @@ test('merge pull requests', async () => {
   expect(context.github.git.deleteRef).toHaveBeenCalled()
 })
 
-function getSuccessStatuses () {
+function getSuccessStatuses (statuses: string[]) {
+  const data = statuses.map((statusName) => {
+    return {
+      context: statusName,
+      state: 'success'
+    }
+  })
+
   return {
-    data: [
-      {
-        context: 'jenkins',
-        state: 'success'
-      }
-    ]
+    data: data
   }
 }
 
-function getSuccessChecks (pr: any) {
+function getSuccessChecks (checks: string[]) {
+  const data = checks.map((checkName) => {
+    return {
+      status: 'completed',
+      conclusion: 'success',
+      app: {owner: {login: checkName}}
+    }
+  })
+
   return {
     data: {
-      check_runs: [
-        {
-          pull_requests: [pr],
-          status: 'completed',
-          conclusion: 'success',
-          app: {owner: {login: 'circleci'}}
-        }
-      ]
+      check_runs: data
     }
   }
 }

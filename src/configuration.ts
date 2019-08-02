@@ -2,8 +2,7 @@ import { Context } from 'probot' // eslint-disable-line no-unused-vars
 import { CONFIGURATION_FILE } from './constants'
 
 const defaultConfig = {
-  requiredChecks: ['circleci', 'travis-ci'],
-  requiredStatuses: []
+  requiredChecks: ['circleci', 'travis-ci']
 }
 
 export async function getConfiguration (context: Context): Promise<any> {
