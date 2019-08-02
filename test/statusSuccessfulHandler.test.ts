@@ -13,7 +13,7 @@ beforeEach(() => {
     },
     payload: {
       state: 'success',
-      sha: '1234'
+      sha: '3efb1d'
     },
     repo: (obj: object) => {
       return Object.assign(
@@ -32,7 +32,7 @@ test('does not call mergeWhenGreen when the status was not successful', async ()
 
   await statusSuccessHandler(context)
 
-  expect(mergeWhenGreen).not.toBeCalled();
+  expect(mergeWhenGreen).not.toBeCalled()
 })
 
 test('calls mergeWhenGreen for all pull requests related to the status', async () => {
@@ -43,7 +43,7 @@ test('calls mergeWhenGreen for all pull requests related to the status', async (
   })
   await statusSuccessHandler(context)
 
-  expect(mergeWhenGreen).toBeCalledTimes(prs.length);
+  expect(mergeWhenGreen).toBeCalledTimes(prs.length)
   prs.map((pr) => {
     expect(mergeWhenGreen).toBeCalledWith(context, pr)
   })

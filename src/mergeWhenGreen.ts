@@ -1,7 +1,7 @@
 import { Context } from 'probot' // eslint-disable-line no-unused-vars
 import Github from '@octokit/rest' // eslint-disable-line no-unused-vars
 import { MERGE_LABEL } from './constants'
-import getConfiguration from './configuration'
+import { getConfiguration } from './configuration'
 
 /* eslint-disable no-undef, no-unused-vars */
 /**

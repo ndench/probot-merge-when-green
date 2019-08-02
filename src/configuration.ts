@@ -6,6 +6,6 @@ const defaultConfig = {
   requiredStatuses: []
 }
 
-export default async function getConfiguration (context: Context): Promise<any> {
+export async function getConfiguration (context: Context): Promise<any> {
   return context.config(CONFIGURATION_FILE, defaultConfig)
 }
