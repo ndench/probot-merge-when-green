@@ -6,7 +6,7 @@ import { MERGE_LABEL } from './constants'
 export default async function checkRunCompletedHandler (context: Context) {
   if (context.payload.state !== 'success') return
 
-  const prs = await (context.github.repos.listPullRequestsAssociatedWithCommit(
+  const prs = (await context.github.repos.listPullRequestsAssociatedWithCommit(
     context.repo({ commit_sha: context.payload.sha })
   )).data
 
