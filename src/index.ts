@@ -14,6 +14,10 @@ export = (app: Application) => {
     await checkRunCompletedHandler(context)
   })
 
+  app.on('status.success', async context => {
+    await checkRunCompletedHandler(context)
+  })
+
   app.on('pull_request_review', async context => {
     await pullRequestReviewHandler(context)
   })
