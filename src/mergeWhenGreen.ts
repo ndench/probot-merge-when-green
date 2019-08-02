@@ -54,7 +54,7 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
   const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) =>
     requiredStatuses.includes(statusItem.context)
   )
-  if (supportedStatuses.length !== supportedStatuses.length) return false
+  if (supportedStatuses.length !== requiredStatuses.length) return false
 
   return supportedStatuses.every(
     (statusItem: Github.ReposListStatusesForRefResponseItem) =>

@@ -89,6 +89,41 @@ test('skip when failing checks but passing statuses', async () => {
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
+test('skip when missing checks but passing statuses', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
+  const pr: any = {
+    number: 1,
+    labels: [{name: MERGE_LABEL}],
+    head: {
+      ref: '3efb1d'
+    }
+  }
+
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses
+  }
+
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
+  context.github.checks.listForRef.mockResolvedValue({
+    data: {
+      check_runs: []
+    }
+  })
+
+  context.github.pulls.merge.mockResolvedValue({
+    data: {
+      merged: true
+    }
+  })
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
+})
+
 test('skip when passing checks but failing statuses', async () => {
   const checks = ['circleci']
   const statuses = ['jenkins']
@@ -114,6 +149,39 @@ test('skip when passing checks but failing statuses', async () => {
         state: 'failed'
       }
     ]
+  })
+
+  context.github.pulls.merge.mockResolvedValue({
+    data: {
+      merged: true
+    }
+  })
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
+})
+
+test('skip when passing checks but missing statuses', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
+  const pr: any = {
+    number: 1,
+    labels: [{name: MERGE_LABEL}],
+    head: {
+      ref: '3efb1d'
+    }
+  }
+
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
+  context.github.repos.listStatusesForRef.mockResolvedValue({
+    data: []
   })
 
   context.github.pulls.merge.mockResolvedValue({
