@@ -3,8 +3,13 @@ import { Application } from 'probot' // eslint-disable-line no-unused-vars
 import checkRunCompletedHandler from './checkRunCompletedHandler'
 import pullRequestReviewHandler from './pullRequestReviewHandler'
 import installationCreatedHandler from './installationCreatedHandler'
+import Rollbar from 'rollbar'
+
+const rollbar = new Rollbar({ accessToken: process.env.ROLLBAR_ACCESS_TOKEN })
 
 export = (app: Application) => {
+  app.router.use(rollbar.errorHandler())
+
   app.on('check_run.completed', async context => {
     await checkRunCompletedHandler(context)
   })
