@@ -1,6 +1,7 @@
 // 'Application' is defined but never used
 import { Application } from 'probot' // eslint-disable-line no-unused-vars
 import checkRunCompletedHandler from './checkRunCompletedHandler'
+import statusSuccessHandler from './statusSuccessHandler'
 import pullRequestReviewHandler from './pullRequestReviewHandler'
 import installationCreatedHandler from './installationCreatedHandler'
 import Rollbar from 'rollbar'
@@ -15,7 +16,7 @@ export = (app: Application) => {
   })
 
   app.on('status.success', async context => {
-    await checkRunCompletedHandler(context)
+    await statusSuccessHandler(context)
   })
 
   app.on('pull_request_review', async context => {
