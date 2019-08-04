@@ -33,13 +33,13 @@ default_events:
 # - project_column
 # - public
 # - pull_request
-# - pull_request_review
+- pull_request_review
 # - pull_request_review_comment
 # - push
 # - release
 # - repository
 # - repository_import
-# - status
+- status
 # - team
 # - team_add
 # - watch
@@ -55,11 +55,11 @@ default_permissions:
 
   # Checks on code.
   # https://developer.github.com/v3/apps/permissions/#permission-on-checks
-  # checks: read
+  checks: read
 
   # Repository contents, commits, branches, downloads, releases, and merges.
   # https://developer.github.com/v3/apps/permissions/#permission-on-contents
-  # contents: read
+  contents: write
 
   # Deployments and deployment statuses.
   # https://developer.github.com/v3/apps/permissions/#permission-on-deployments
