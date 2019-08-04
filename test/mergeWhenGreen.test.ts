@@ -63,8 +63,7 @@ test('skip when failing checks but passing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requiredStatuses: statuses
   }
 
   context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
@@ -105,8 +104,7 @@ test('skip when missing checks but passing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requiredStatuses: statuses
   }
 
   context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
@@ -141,8 +139,7 @@ test('skip when passing checks but failing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requiredStatuses: statuses
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
@@ -180,8 +177,7 @@ test('skip when passing checks but missing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requiredStatuses: statuses
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
@@ -272,8 +268,7 @@ test('merge pull requests when passing checks and statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requiredStatuses: statuses
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
@@ -306,7 +301,7 @@ test('merge pull requests when passing checks and statuses and all requested rev
   mockConfiguration = {
     requiredChecks: checks,
     requiredStatuses: statuses,
-    requireApprovalFromRequestedReviewers: false
+    requireApprovalFromRequestedReviewers: true
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
