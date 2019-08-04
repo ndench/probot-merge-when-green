@@ -29,7 +29,8 @@ requiredStatuses:
   - jenkins
 ```
 
-By default, Merge when green will only require the `cicleci` and `travis-ci` checks.
+By default, Merge when green will wait for [branch protection](https://help.github.com/en/articles/about-protected-branches)
+to pass and also require `circleci` and `travis-ci` before attempting to merge.
 
 Merge when green also allows you to ensure that all requested reviews have approved the pull request. Just add the 
 following to your `.github/merge-when-green.yml`:
