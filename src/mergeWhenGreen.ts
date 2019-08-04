@@ -4,8 +4,8 @@ import { MERGE_LABEL } from './constants'
 import { getConfiguration } from './configuration'
 
 export default async function mergeWhenGreen (context: Context, pr: Github.PullsGetResponse) {
-  if (!hasMergeLabel(pr)) return
   if (!pr.mergeable) return
+  if (!hasMergeLabel(pr)) return
 
   if (!(await isEveryCheckSuccessful(context, pr))) return
   if (!(await isEveryStatusSuccessful(context, pr))) return

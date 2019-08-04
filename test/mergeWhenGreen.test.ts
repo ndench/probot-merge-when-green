@@ -39,10 +39,9 @@ beforeEach(() => {
   }
 })
 
-test('skip when no merge label', async () => {
+test('skip not mergeable', async () => {
   const pr: any = {
-    mergeable: true,
-    labels: []
+    mergeable: false
   }
   await mergeWhenGreen(context, pr)
 
@@ -52,10 +51,10 @@ test('skip when no merge label', async () => {
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
 
-test('skip not mergeable', async () => {
+test('skip when no merge label', async () => {
   const pr: any = {
-    mergeable: false,
-    labels: [MERGE_LABEL]
+    mergeable: true,
+    labels: []
   }
   await mergeWhenGreen(context, pr)
 
