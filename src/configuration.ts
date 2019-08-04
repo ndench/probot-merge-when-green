@@ -14,13 +14,12 @@ export async function getConfiguration (context: Context): Promise<any> {
 
   if (config === null || config === {}) return defaultConfig
 
-
   // set defaults
-  if (config.requiredChecks == null) {
+  if (config.requiredChecks === null) {
     config.requiredChecks = []
   }
 
-  if (config.requiredStatuses == null) {
+  if (config.requiredStatuses === null) {
     config.requiredStatuses = []
   }
 
