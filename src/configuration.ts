@@ -4,6 +4,7 @@ import { CONFIGURATION_FILE } from './constants'
 const defaultConfig = {
   requiredChecks: ['circleci', 'travis-ci'],
   requiredStatuses: [],
+  requireApprovalFromRequestedReviewers: false,
   isDefaultConfig: true
 }
 

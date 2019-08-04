@@ -14,7 +14,8 @@ beforeEach(() => {
     github: {
       pulls: {
         get: jest.fn(),
-        merge: jest.fn()
+        merge: jest.fn(),
+        listReviewRequests: jest.fn()
       },
       checks: {
         listForRef: jest.fn()
@@ -62,7 +63,8 @@ test('skip when failing checks but passing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
   }
 
   context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
@@ -103,7 +105,8 @@ test('skip when missing checks but passing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
   }
 
   context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
@@ -138,7 +141,8 @@ test('skip when passing checks but failing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
@@ -176,7 +180,8 @@ test('skip when passing checks but missing statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
@@ -189,6 +194,64 @@ test('skip when passing checks but missing statuses', async () => {
       merged: true
     }
   })
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
+})
+
+test('skip when not all requested users reviewers have approved', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
+  const pr: any = {
+    number: 1,
+    labels: [{name: MERGE_LABEL}],
+    head: {
+      ref: '3efb1d'
+    }
+  }
+
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: true
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
+
+  context.github.pulls.listReviewRequests.mockResolvedValue({ data: { users: ['Iron Man'], teams: [] } })
+
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
+})
+
+test('skip when not all requested team reviewers have approved', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
+  const pr: any = {
+    number: 1,
+    labels: [{name: MERGE_LABEL}],
+    head: {
+      ref: '3efb1d'
+    }
+  }
+
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: true
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
+
+  context.github.pulls.listReviewRequests.mockResolvedValue({ data: { users: [], teams: ['The Avengers'] } })
+
   await mergeWhenGreen(context, pr)
 
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
@@ -209,11 +272,46 @@ test('merge pull requests when passing checks and statuses', async () => {
 
   mockConfiguration = {
     requiredChecks: checks,
-    requiredStatuses: statuses
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
   }
 
   context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
   context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
+
+  context.github.pulls.merge.mockResolvedValue({
+    data: {
+      merged: true
+    }
+  })
+
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.pulls.merge).toHaveBeenCalled()
+  expect(context.github.git.deleteRef).toHaveBeenCalled()
+})
+
+test('merge pull requests when passing checks and statuses and all requested reviews have approved', async () => {
+  const checks = ['circleci']
+  const statuses = ['jenkins']
+
+  const pr: any = {
+    number: 1,
+    labels: [{name: MERGE_LABEL}],
+    head: {
+      ref: '3efb1d'
+    }
+  }
+
+  mockConfiguration = {
+    requiredChecks: checks,
+    requiredStatuses: statuses,
+    requireApprovalFromRequestedReviewers: false
+  }
+
+  context.github.checks.listForRef.mockResolvedValue(getSuccessChecks(checks))
+  context.github.repos.listStatusesForRef.mockResolvedValue(getSuccessStatuses(statuses))
+  context.github.pulls.listReviewRequests.mockResolvedValue({ data: { users: [], teams: [] } })
 
   context.github.pulls.merge.mockResolvedValue({
     data: {
