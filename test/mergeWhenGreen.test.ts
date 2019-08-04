@@ -40,7 +40,23 @@ beforeEach(() => {
 })
 
 test('skip when no merge label', async () => {
-  const pr: any = {labels: []}
+  const pr: any = {
+    mergeable: true,
+    labels: []
+  }
+  await mergeWhenGreen(context, pr)
+
+  expect(context.github.checks.listForRef).not.toHaveBeenCalled()
+  expect(context.github.repos.listStatusesForRef).not.toHaveBeenCalled()
+  expect(context.github.pulls.merge).not.toHaveBeenCalled()
+  expect(context.github.git.deleteRef).not.toHaveBeenCalled()
+})
+
+test('skip not mergeable', async () => {
+  const pr: any = {
+    mergeable: false,
+    labels: [MERGE_LABEL]
+  }
   await mergeWhenGreen(context, pr)
 
   expect(context.github.checks.listForRef).not.toHaveBeenCalled()
@@ -55,6 +71,7 @@ test('skip when failing checks but passing statuses', async () => {
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
@@ -86,6 +103,7 @@ test('skip when failing checks but passing statuses', async () => {
   })
   await mergeWhenGreen(context, pr)
 
+  expect(context.github.checks.listForRef).toHaveBeenCalled()
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
@@ -96,6 +114,7 @@ test('skip when missing checks but passing statuses', async () => {
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
@@ -121,6 +140,7 @@ test('skip when missing checks but passing statuses', async () => {
   })
   await mergeWhenGreen(context, pr)
 
+  expect(context.github.checks.listForRef).toHaveBeenCalled()
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
@@ -131,6 +151,7 @@ test('skip when passing checks but failing statuses', async () => {
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
@@ -159,6 +180,7 @@ test('skip when passing checks but failing statuses', async () => {
   })
   await mergeWhenGreen(context, pr)
 
+  expect(context.github.repos.listStatusesForRef).toHaveBeenCalled()
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
@@ -169,6 +191,7 @@ test('skip when passing checks but missing statuses', async () => {
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
@@ -192,6 +215,7 @@ test('skip when passing checks but missing statuses', async () => {
   })
   await mergeWhenGreen(context, pr)
 
+  expect(context.github.repos.listStatusesForRef).toHaveBeenCalled()
   expect(context.github.pulls.merge).not.toHaveBeenCalled()
   expect(context.github.git.deleteRef).not.toHaveBeenCalled()
 })
@@ -260,6 +284,7 @@ test('merge pull requests when passing checks and statuses', async () => {
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
@@ -282,6 +307,8 @@ test('merge pull requests when passing checks and statuses', async () => {
 
   await mergeWhenGreen(context, pr)
 
+  expect(context.github.checks.listForRef).toHaveBeenCalled()
+  expect(context.github.repos.listStatusesForRef).toHaveBeenCalled()
   expect(context.github.pulls.merge).toHaveBeenCalled()
   expect(context.github.git.deleteRef).toHaveBeenCalled()
 })

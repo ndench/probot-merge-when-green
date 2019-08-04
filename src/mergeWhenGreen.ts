@@ -5,6 +5,8 @@ import { getConfiguration } from './configuration'
 
 export default async function mergeWhenGreen (context: Context, pr: Github.PullsGetResponse) {
   if (!hasMergeLabel(pr)) return
+  if (!pr.mergeable) return
+
   if (!(await isEveryCheckSuccessful(context, pr))) return
   if (!(await isEveryStatusSuccessful(context, pr))) return
   if (!(await requestedReviewsComplete(context, pr))) return
