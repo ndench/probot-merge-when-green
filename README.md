@@ -18,10 +18,6 @@ Visit https://github.com/marketplace/merge-when-green
 
 ### Configuration
 
-Github has two different types of CI runs, "Checks" and "Statuses". Both run against PRs except Checks result in a 
-"Checks" tab being available on the PR to give more information, while a Status is just a green tick (or red cross).
-See [this GitHub article](https://help.github.com/en/articles/about-status-checks) for more information.
-
 Merge when green supports both Checks and Statuses. You can configure which ones must pass for the PR to be considered
 "green" in order for it to be merged. Create a `.github/merge-when-green.yml` file to list the require checks/statuses:
 

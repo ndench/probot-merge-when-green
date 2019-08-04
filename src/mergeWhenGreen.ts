@@ -25,6 +25,7 @@ export default async function mergeWhenGreen (context: Context, pr: PullType) {
 }
 
 const hasMergeLabel = (pr: PullType) : boolean => pr.labels.some((label) => label.name === MERGE_LABEL)
+
 const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<boolean> => {
   const checkRuns = (await context.github.checks.listForRef(
     context.repo({ ref: pr.head.ref })
@@ -44,6 +45,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
       checkRun.status === 'completed' && checkRun.conclusion === 'success'
   )
 }
+
 const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<boolean> => {
   const statuses = (await context.github.repos.listStatusesForRef(
     context.repo({ ref: pr.head.ref })
