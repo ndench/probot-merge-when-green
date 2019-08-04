@@ -31,14 +31,19 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
     context.repo({ ref: pr.head.ref })
   )).data.check_runs
 
-  const { requiredChecks } = await getConfiguration(context)
+  const { isDefaultConfig, requiredChecks } = await getConfiguration(context)
 
-  // Github.ChecksListForRefResponse
   const supportedCheckRuns = checkRuns.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
     requiredChecks.includes(checkRun.app.owner.login)
   )
 
-  if (supportedCheckRuns.length !== requiredChecks.length) return false
+  // for default config MWG searches for circleci or travis-ci
+  // most of the repos will have one OR the other
+  // if default config and circleci or travis-ci passes we are good to merge
+  if (isDefaultConfig && supportedCheckRuns.length === 0) return false
+
+  // for non-default config all required checks must be found and successful
+  if (!isDefaultConfig && supportedCheckRuns.length !== requiredChecks.length) return false
 
   return supportedCheckRuns.every(
     (checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
