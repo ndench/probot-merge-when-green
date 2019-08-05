@@ -105,8 +105,10 @@ const requestedReviewsComplete = async (context: Context, pr: PullType): Promise
 }
 
 const mergeAndDeleteBranch = async (context: Context, pr: PullType): Promise<void> => {
+  const { mergeMethod } = await getConfiguration(context)
+
   const result = await context.github.pulls.merge(
-    context.repo({ pull_number: pr.number })
+    context.repo({ pull_number: pr.number, merge_method: mergeMethod })
   )
 
   if (!result.data.merged) return
