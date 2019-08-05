@@ -32,6 +32,9 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
   )).data.check_runs
 
   const { isDefaultConfig, requiredChecks } = await getConfiguration(context)
+
+  if (requiredChecks === null || requiredChecks === []) return true
+
   const uniqMatches = new Set()
 
   const supportedCheckRuns = checkRuns.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) => {
@@ -63,6 +66,9 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
   )).data
 
   const { requiredStatuses } = await getConfiguration(context)
+
+  if (requiredStatuses === null || requiredStatuses === []) return true
+
   const uniqMatches = new Set()
 
   const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) => {
