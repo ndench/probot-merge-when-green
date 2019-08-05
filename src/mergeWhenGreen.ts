@@ -24,7 +24,7 @@ export default async function mergeWhenGreen (context: Context, pr: PullType) {
   await mergeAndDeleteBranch(context, pr)
 }
 
-const hasMergeLabel = (pr: PullType) : boolean => pr.labels.some((label) => label.name === MERGE_LABEL)
+const hasMergeLabel = (pr: PullType): boolean => pr.labels.some((label) => label.name === MERGE_LABEL)
 
 const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<boolean> => {
   const checkRuns = (await context.github.checks.listForRef(
@@ -33,9 +33,18 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
 
   const { isDefaultConfig, requiredChecks } = await getConfiguration(context)
 
-  const supportedCheckRuns = checkRuns.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
-    requiredChecks.includes(checkRun.app.owner.login)
-  )
+  if (requiredChecks === null || requiredChecks === []) return true
+
+  const uniqMatches = new Set()
+
+  const supportedCheckRuns = checkRuns.filter((checkRun: Github.ChecksListForRefResponseCheckRunsItem) => {
+    const check = checkRun.app.owner.login
+    if (requiredChecks.includes(check)) {
+      uniqMatches.add(check)
+      return true
+    }
+    return false
+  })
 
   // for default config MWG searches for circleci or travis-ci
   // most of the repos will have one OR the other
@@ -43,7 +52,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
   if (isDefaultConfig && supportedCheckRuns.length === 0) return false
 
   // for non-default config all required checks must be found and successful
-  if (!isDefaultConfig && supportedCheckRuns.length !== requiredChecks.length) return false
+  if (!isDefaultConfig && uniqMatches.size !== requiredChecks.length) return false
 
   return supportedCheckRuns.every(
     (checkRun: Github.ChecksListForRefResponseCheckRunsItem) =>
@@ -58,10 +67,20 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
 
   const { requiredStatuses } = await getConfiguration(context)
 
-  const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) =>
-    requiredStatuses.includes(statusItem.context)
-  )
-  if (supportedStatuses.length !== requiredStatuses.length) return false
+  if (requiredStatuses === null || requiredStatuses === []) return true
+
+  const uniqMatches = new Set()
+
+  const supportedStatuses = statuses.filter((statusItem: Github.ReposListStatusesForRefResponseItem) => {
+    const check = statusItem.context
+    if (requiredStatuses.includes(check)) {
+      uniqMatches.add(check)
+      return true
+    }
+    return false
+  })
+
+  if (uniqMatches.size !== requiredStatuses.length) return false
 
   return supportedStatuses.every(
     (statusItem: Github.ReposListStatusesForRefResponseItem) =>
