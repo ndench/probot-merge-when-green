@@ -10,8 +10,6 @@ const defaultConfig = {
 export async function getConfiguration (context: Context): Promise<any> {
   const config = await context.config(CONFIGURATION_FILE)
 
-  console.log({ config })
-
   if (config === null || config === {}) return defaultConfig
 
   // set defaults
