@@ -31,7 +31,7 @@ export async function getConfiguration (context: Context): Promise<any> {
     config.requiredStatuses = []
   }
 
-  if (config.mergeMethod === null || !validMergeMethods.includes(config.mergeMethod)) {
+  if (!validMergeMethods.includes(config.mergeMethod)) {
     config.mergeMethod = 'merge'
   }
 

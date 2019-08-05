@@ -38,6 +38,13 @@ following to your `.github/merge-when-green.yml`:
 requireApprovalFromRequestedReviewers: true
 ```
 
+You can change method that Merge when green uses to merge pull requests with the `mergeMethod` option. Valid values are 
+`merge`, `squash` and `rebase`, the default is `merge`.
+
+```yaml
+mergeMethod: squash
+```
+
 #### Travis CI and CicleCI
 
 To work with Travis CI and CicleCI make sure GitHub Checks are enabled.
