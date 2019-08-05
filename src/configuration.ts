@@ -22,5 +22,9 @@ export async function getConfiguration (context: Context): Promise<any> {
     config.requiredStatuses = []
   }
 
+  if (config.requireApprovalFromRequestedReviewers === null) {
+    config.requireApprovalFromRequestedReviewers = false
+  }
+
   return {...config, isDefaultConfig: false}
 }
