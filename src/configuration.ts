@@ -4,6 +4,7 @@ import { CONFIGURATION_FILE } from './constants'
 const defaultConfig = {
   requiredChecks: ['circleci', 'travis-ci'],
   requiredStatuses: [],
+  requireApprovalFromRequestedReviewers: false,
   isDefaultConfig: true
 }
 
@@ -19,6 +20,10 @@ export async function getConfiguration (context: Context): Promise<any> {
 
   if (config.requiredStatuses === null) {
     config.requiredStatuses = []
+  }
+
+  if (config.requireApprovalFromRequestedReviewers === null) {
+    config.requireApprovalFromRequestedReviewers = false
   }
 
   return {...config, isDefaultConfig: false}

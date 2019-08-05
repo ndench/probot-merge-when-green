@@ -20,6 +20,7 @@ export default async function mergeWhenGreen (context: Context, pr: PullType) {
   if (!hasMergeLabel(pr)) return
   if (!(await isEveryCheckSuccessful(context, pr))) return
   if (!(await isEveryStatusSuccessful(context, pr))) return
+  if (!(await requestedReviewsComplete(context, pr))) return
 
   await mergeAndDeleteBranch(context, pr)
 }
@@ -86,6 +87,19 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
     (statusItem: Github.ReposListStatusesForRefResponseItem) =>
       statusItem.state === 'success'
   )
+}
+
+const requestedReviewsComplete = async (context: Context, pr: PullType): Promise<boolean> => {
+  const { requireApprovalFromRequestedReviewers } = await getConfiguration(context)
+  if (!requireApprovalFromRequestedReviewers) {
+    return Promise.resolve(true)
+  }
+
+  const requestedReviews = (await context.github.pulls.listReviewRequests(
+    context.repo({ pull_number: pr.number })
+  )).data
+
+  return requestedReviews.users.length === 0 && requestedReviews.teams.length === 0
 }
 
 const mergeAndDeleteBranch = async (context: Context, pr: PullType): Promise<void> => {
