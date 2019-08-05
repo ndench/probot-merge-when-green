@@ -318,6 +318,7 @@ test('merge pull requests when passing checks and statuses and all requested rev
 
   const pr: any = {
     number: 1,
+    mergeable: true,
     labels: [{name: MERGE_LABEL}],
     head: {
       ref: '3efb1d'
