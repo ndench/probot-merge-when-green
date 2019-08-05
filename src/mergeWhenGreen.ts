@@ -33,7 +33,7 @@ const isEveryCheckSuccessful = async (context: Context, pr: PullType): Promise<b
 
   const { isDefaultConfig, requiredChecks } = await getConfiguration(context)
 
-  if (requiredChecks === null || requiredChecks === []) return true
+  if (requiredChecks === undefined || requiredChecks === []) return true
 
   const uniqMatches = new Set()
 
@@ -67,7 +67,7 @@ const isEveryStatusSuccessful = async (context: Context, pr: PullType): Promise<
 
   const { requiredStatuses } = await getConfiguration(context)
 
-  if (requiredStatuses === null || requiredStatuses === []) return true
+  if (requiredStatuses === undefined || requiredStatuses === []) return true
 
   const uniqMatches = new Set()
 
