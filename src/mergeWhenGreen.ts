@@ -99,6 +99,8 @@ const requestedReviewsComplete = async (context: Context, pr: PullType): Promise
     context.repo({ pull_number: pr.number })
   )).data
 
+  // I tested on one of my repositories and the list review requests api only returns users or teams that have not submitted a review yet.
+  // https://github.com/phstc/probot-merge-when-green/pull/45
   return requestedReviews.users.length === 0 && requestedReviews.teams.length === 0
 }
 
